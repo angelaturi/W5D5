@@ -27,12 +27,25 @@ def costars(name)
   # List the names of the actors that the named actor has ever
   # appeared with.
   # Hint: use a subquery
+  sub = Movie
+    .select(:id)
+    .joins(:actors)
+    .where(actors: {name: name})
 
+  Movie
+    .joins(:actors)
+    .where.not(actors: {name: name})
+    .where(movies: { id: sub } )
+    .distinct
+    .pluck(:name)
+    
 end
 
 def actor_out_of_work
   # Find the number of actors in the database who have not appeared in a movie
-
+  Actor
+    .select(:name)
+    .joins('LEFT OUTER JOIN casting')
 end
 
 def starring(whazzername)
